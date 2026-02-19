@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>IAF - Defense System Access</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "iaf-saffron": "#FF9933",
+                        "iaf-green": "#138808",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(16, 22, 34, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(17, 82, 212, 0.3);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+        }
+        .scan-line {
+            background: linear-gradient(to bottom, transparent, #1152d4, transparent);
+            height: 2px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .glow-button {
+            box-shadow: 0 0 15px rgba(17, 82, 212, 0.4);
+            transition: all 0.3s ease;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 25px rgba(17, 82, 212, 0.6);
+            transform: translateY(-1px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen overflow-hidden selection:bg-primary selection:text-white">
+<!-- Background Layer -->
+<div class="fixed inset-0 z-0">
+<div class="absolute inset-0 bg-gradient-to-b from-background-dark/80 via-background-dark/40 to-background-dark/90 z-10"></div>
+<div class="w-full h-full bg-center bg-no-repeat bg-cover" data-alt="Indian Air Force fighter jet cockpit view at night" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCDN8QolAj-IL_WW-qou7JrqNVaAQyS86Bx5eCoC_E-7t0Mf0-46oGb5AHLEr5ZHR_Sd_IUadJ9WwXtXLD9hHNbWhD9mP6pJHBwu7Tx5Gtf191ylt4HBoH-QwWpDv4HOZy_H2sx3sd16ukTG21J1Zw-BlBH8O0UztZrWCSaxA43y8Q_QismFT9spaLGwM1JiNtHVB_OsNzujtjP-LOjEHMrur4N5F7PrGBexb-s_5PFt2dCfB1QarvDP0Mxir7-nKX1lUww8Droetw');">
+</div>
+</div>
+<!-- UI Overlay Elements -->
+<div class="relative z-20 min-h-screen flex flex-col items-center justify-center p-4">
+<!-- Top Technical Readouts -->
+<div class="absolute top-6 left-6 text-[10px] uppercase tracking-[0.2em] text-primary/60 font-medium hidden md:block">
+<p>System: IAF-G3-DEFENSE-V4.2</p>
+<p>Location: 28.6139° N, 77.2090° E</p>
+<p>Status: Encrypted Gateway 12-B</p>
+</div>
+<div class="absolute top-6 right-6 text-[10px] uppercase tracking-[0.2em] text-primary/60 font-medium text-right hidden md:block">
+<p>Connection: SECURE-AES-256</p>
+<p>Uptime: 1422:12:09</p>
+<p>Signal: 98.4% STABLE</p>
+</div>
+<!-- Main Login Card -->
+<div class="glass-panel w-full max-w-md p-8 md:p-10 rounded-lg relative overflow-hidden">
+<!-- Scanning Line Visual -->
+<div class="absolute top-0 left-0 w-full h-1 bg-primary/20"></div>
+<div class="flex flex-col items-center mb-8">
+<!-- IAF Logo / Biometric Icon -->
+<div class="w-16 h-16 rounded-full border border-primary/40 flex items-center justify-center mb-4 relative">
+<span class="material-symbols-outlined text-4xl text-primary">fingerprint</span>
+<!-- Spinner Effect (Pseudo-animation via classes) -->
+<div class="absolute inset-0 rounded-full border-t-2 border-primary animate-spin opacity-40"></div>
+</div>
+<div class="text-center">
+<h1 class="text-2xl md:text-3xl font-bold tracking-[0.15em] text-white uppercase">STRATOVEX</h1>
+<p class="text-[10px] md:text-xs tracking-[0.3em] text-primary mt-1 uppercase font-semibold">Indian Air Force Secure Gateway</p>
+</div>
+</div>
+<!-- Login Form -->
+<form class="space-y-6" onsubmit="return false;">
+<!-- Username -->
+<div class="space-y-1">
+<label class="text-[10px] uppercase tracking-widest text-slate-400 ml-1">Officer ID / Authentication Required</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary/60 text-lg transition-colors group-focus-within:text-primary">person</span>
+<input class="w-full bg-background-dark/50 border border-primary/20 rounded-sm py-3 pl-10 pr-4 text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder:text-slate-600 uppercase text-sm tracking-wider" placeholder="IAF-7742-ALPHA" type="text"/>
+</div>
+</div>
+<!-- Password -->
+<div class="space-y-1">
+<label class="text-[10px] uppercase tracking-widest text-slate-400 ml-1">Access Protocol / Secure Key</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary/60 text-lg transition-colors group-focus-within:text-primary">lock</span>
+<input class="w-full bg-background-dark/50 border border-primary/20 rounded-sm py-3 pl-10 pr-4 text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder:text-slate-600 text-sm tracking-widest" placeholder="••••••••••••" type="password"/>
+</div>
+</div>
+<!-- Action Button -->
+<div class="pt-2">
+<button class="glow-button w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded text-sm tracking-[0.2em] uppercase flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined text-xl">verified_user</span>
+                        Grant Access
+                    </button>
+<!-- Visual Accent Line below button -->
+<div class="flex justify-center gap-2 mt-4">
+<div class="h-0.5 w-8 bg-iaf-saffron"></div>
+<div class="h-0.5 w-8 bg-white/50"></div>
+<div class="h-0.5 w-8 bg-iaf-green"></div>
+</div>
+</div>
+</form>
+<!-- Status Indicator -->
+<div class="mt-8 flex items-center justify-between border-t border-primary/10 pt-4">
+<div class="flex items-center gap-2">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="text-[9px] uppercase tracking-tighter text-slate-400">Scanning Biometrics...</span>
+</div>
+<div class="text-[9px] uppercase tracking-tighter text-slate-500">
+                    Terminal ID: 09-XRAY
+                </div>
+</div>
+</div>
+<!-- Footer Warning -->
+<div class="mt-8 max-w-md text-center">
+<p class="text-[10px] text-slate-500 uppercase tracking-[0.15em] leading-relaxed">
+                Restricted Area: Unauthorized access is strictly prohibited and monitored by IAF cyber command. 
+                IP Address Recorded: <span class="text-primary">192.168.1.1</span>
+</p>
+</div>
+</div>
+<!-- Background Grid Effect -->
+<div class="fixed inset-0 z-10 pointer-events-none opacity-[0.03]" style="background-image: linear-gradient(#1152d4 1px, transparent 1px), linear-gradient(90deg, #1152d4 1px, transparent 1px); background-size: 50px 50px;">
+</div>
+</body></html>

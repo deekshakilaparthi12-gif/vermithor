@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAFFADIDHAM - Secure Access Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Courier New', monospace;
+            background: linear-gradient(135deg, #0B0F2F 0%, #062F2F 50%, #0B0F2F 100%);
+            color: #C9D6FF;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background grid effect */
+        @keyframes gridFlow {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(100px);
+            }
+        }
+
+        @keyframes scanLineMove {
+            0% {
+                top: -100%;
+            }
+            100% {
+                top: 100%;
+            }
+        }
+
+        /* Grid overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(0, 255, 198, 0.05) 25%, rgba(0, 255, 198, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 198, 0.05) 75%, rgba(0, 255, 198, 0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(0, 255, 198, 0.05) 25%, rgba(0, 255, 198, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 198, 0.05) 75%, rgba(0, 255, 198, 0.05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 1;
+            animation: gridFlow 20s linear infinite;
+        }
+
+        /* Scanning line effect */
+        .scan-line {
+            position: fixed;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(0, 255, 198, 0.8), transparent);
+            pointer-events: none;
+            z-index: 2;
+            animation: scanLineMove 6s linear infinite;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 3;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Page title */
+        .page-title {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .page-title h1 {
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #00FFC6;
+            text-shadow: 
+                0 0 20px rgba(0, 255, 198, 0.8),
+                0 0 40px rgba(0, 255, 198, 0.4),
+                0 0 60px rgba(255, 77, 109, 0.2);
+            text-transform: uppercase;
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                text-shadow: 
+                    0 0 20px rgba(0, 255, 198, 0.8),
+                    0 0 40px rgba(0, 255, 198, 0.4),
+                    0 0 60px rgba(255, 77, 109, 0.2);
+            }
+            50% {
+                text-shadow: 
+                    0 0 30px rgba(0, 255, 198, 1),
+                    0 0 60px rgba(0, 255, 198, 0.6),
+                    0 0 90px rgba(255, 77, 109, 0.4);
+            }
+        }
+
+        /* Login card container */
+        .login-card {
+            background: rgba(6, 47, 47, 0.4);
+            border: 2px solid rgba(0, 255, 198, 0.3);
+            border-radius: 16px;
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 0 40px rgba(0, 255, 198, 0.2),
+                inset 0 0 30px rgba(0, 255, 198, 0.05),
+                0 0 80px rgba(255, 77, 109, 0.1);
+            position: relative;
+            transition: all 0.4s ease;
+            animation: cardFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .login-card:hover {
+            border-color: rgba(0, 255, 198, 0.6);
+            box-shadow: 
+                0 0 60px rgba(0, 255, 198, 0.4),
+                inset 0 0 40px rgba(0, 255, 198, 0.1),
+                0 0 100px rgba(255, 77, 109, 0.2);
+        }
+
+        /* Card title */
+        .card-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #00FFC6;
+            margin-bottom: 35px;
+            text-shadow: 0 0 15px rgba(0, 255, 198, 0.5);
+        }
+
+        /* Form group */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: #C9D6FF;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(11, 15, 47, 0.6);
+            border: 2px solid rgba(0, 255, 198, 0.2);
+            border-radius: 8px;
+            color: #C9D6FF;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(201, 214, 255, 0.4);
+        }
+
+        .form-group input:focus {
+            background: rgba(6, 47, 47, 0.8);
+            border-color: #00FFC6;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 198, 0.6),
+                inset 0 0 15px rgba(0, 255, 198, 0.1);
+            color: #00FFC6;
+        }
+
+        .form-group input:focus + label,
+        .form-group label:has(+ input:focus) {
+            color: #00FFC6;
+            opacity: 1;
+        }
+
+        /* Submit button */
+        .submit-btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #00FFC6 0%, #00E5D4 100%);
+            border: none;
+            border-radius: 8px;
+            color: #0B0F2F;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 198, 0.5);
+            margin-top: 30px;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #00FFC6 0%, #00FFD4 100%);
+            box-shadow: 
+                0 0 30px rgba(0, 255, 198, 0.8),
+                0 0 60px rgba(0, 255, 198, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+            box-shadow: 
+                0 0 20px rgba(0, 255, 198, 0.5),
+                inset 0 0 20px rgba(0, 255, 198, 0.2);
+        }
+
+        /* System status text */
+        .system-status {
+            text-align: center;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: rgba(0, 255, 198, 0.7);
+            margin-top: 20px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.3s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .system-status .status-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: #00FFC6;
+            border-radius: 50%;
+            margin-right: 6px;
+            box-shadow: 0 0 8px rgba(0, 255, 198, 0.8);
+            animation: statusPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 8px rgba(0, 255, 198, 0.8);
+            }
+            50% {
+                opacity: 0.6;
+                box-shadow: 0 0 12px rgba(0, 255, 198, 0.4);
+            }
+        }
+
+        /* Footer */
+        .footer {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            padding: 30px 20px 20px;
+            font-size: 11px;
+            letter-spacing: 0.8px;
+            color: rgba(255, 77, 109, 0.8);
+            line-height: 1.6;
+        }
+
+        .footer-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .warning-icon {
+            font-size: 14px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .page-title h1 {
+                font-size: 32px;
+                letter-spacing: 2px;
+                margin-bottom: 40px;
+            }
+
+            .login-card {
+                padding: 40px 30px;
+                border-radius: 12px;
+            }
+
+            .card-title {
+                font-size: 20px;
+                margin-bottom: 30px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-group input {
+                padding: 12px 14px;
+                font-size: 13px;
+            }
+
+            .submit-btn {
+                padding: 12px 18px;
+                font-size: 12px;
+                margin-top: 25px;
+            }
+
+            .system-status {
+                font-size: 10px;
+            }
+
+            .footer {
+                padding: 20px 15px 15px;
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .page-title h1 {
+                font-size: 24px;
+                letter-spacing: 1.5px;
+                margin-bottom: 30px;
+            }
+
+            .login-card {
+                padding: 30px 20px;
+            }
+
+            .card-title {
+                font-size: 16px;
+                margin-bottom: 25px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            .form-group label {
+                font-size: 11px;
+            }
+
+            .form-group input {
+                padding: 10px 12px;
+                font-size: 12px;
+                border-radius: 6px;
+            }
+
+            .submit-btn {
+                padding: 10px 16px;
+                font-size: 11px;
+                margin-top: 20px;
+                border-radius: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background effects -->
+    <div class="grid-overlay"></div>
+    <div class="scan-line"></div>
+
+    <!-- Main container -->
+    <div class="container">
+        <!-- Page title -->
+        <div class="page-title">
+            <h1>RAFFADIDHAM</h1>
+        </div>
+
+        <!-- Login card -->
+        <div class="login-card">
+            <div class="card-title">Secure Access Portal</div>
+
+            <form id="loginForm">
+                <!-- Username field -->
+                <div class="form-group">
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        placeholder="Enter username"
+                        required
+                    >
+                    <label for="username">Username</label>
+                </div>
+
+                <!-- Password field -->
+                <div class="form-group">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Enter password"
+                        required
+                    >
+                    <label for="password">Password</label>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="submit-btn">Grant Access</button>
+
+                <!-- System status -->
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    Encryption Protocol: Active
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer warning -->
+    <div class="footer">
+        <div class="footer-text">
+            <span class="warning-icon">⚠️</span>
+            <span>Unauthorized access attempts will trigger countermeasures.</span>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        // Handle form submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            // Validate inputs are not empty
+            if (username && password) {
+                // Show success feedback
+                showAccessGranted();
+                
+                // Reset form after a delay
+                setTimeout(() => {
+                    loginForm.reset();
+                    usernameInput.focus();
+                }, 1500);
+            }
+        });
+
+        // Add button click effect
+        const submitBtn = loginForm.querySelector('.submit-btn');
+        submitBtn.addEventListener('click', (e) => {
+            if (loginForm.checkValidity() === false) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Add shake effect on invalid submission
+                loginForm.style.animation = 'shake 0.4s ease';
+                setTimeout(() => {
+                    loginForm.style.animation = '';
+                }, 400);
+            }
+        });
+
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Success feedback
+        function showAccessGranted() {
+            submitBtn.style.background = 'linear-gradient(135deg, #00FF88 0%, #00DD66 100%)';
+            submitBtn.textContent = 'ACCESS GRANTED ✓';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                submitBtn.style.background = 'linear-gradient(135deg, #00FFC6 0%, #00E5D4 100%)';
+                submitBtn.textContent = 'GRANT ACCESS';
+                submitBtn.disabled = false;
+            }, 1500);
+        }
+
+        // Focus on first input
+        setTimeout(() => {
+            usernameInput.focus();
+        }, 500);
+
+        // Allow any character type in inputs
+        [usernameInput, passwordInput].forEach(input => {
+            input.addEventListener('input', (e) => {
+                // All characters are allowed - no filtering needed
+                // The input type and pattern attributes handle the rest
+            });
+        });
+    </script>
+</body>
+</html>
